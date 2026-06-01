@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroEco: O Desafio Sustentável</title>
+    <title>BioFazenda 2D - Estilo Hay Day</title>
     <style>
-        /* --- ESTILOS GERAIS E CENÁRIO --- */
         * {
             margin: 0;
             padding: 0;
@@ -15,8 +14,8 @@
         }
 
         body {
-            background: #2c3e50;
-            color: #fff;
+            background: #e3f2fd;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,170 +23,227 @@
         }
 
         h1 {
-            color: #2ecc71;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px #27ae60;
-        }
-
-        .subtitulo {
-            font-size: 0.9rem;
-            color: #bdc3c7;
-            margin-bottom: 20px;
-        }
-
-        /* --- PAINEL DE STATUS (RECURSOS) --- */
-        .painel-status {
-            background: #34495e;
-            padding: 15px 30px;
-            border-radius: 50px;
-            display: flex;
-            gap: 40px;
-            box-shadow: 0 8px 0 #2c3e50;
-            margin-bottom: 30px;
-            border: 3px solid #1abc9c;
-        }
-
-        .status-item {
-            font-size: 1.2rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* --- O TABULEIRO DA FAZENDA (GRID) --- */
-        .fazenda-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 120px);
-            grid-template-rows: repeat(2, 120px);
-            gap: 15px;
-            background: #855e42; /* Cor de terra */
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 0 #5c3a21;
-            margin-bottom: 30px;
-        }
-
-        /* Esconder os inputs reais (o segredo do clique) */
-        .plot-input {
-            display: none;
-        }
-
-        /* O lote de terra clicável */
-        .lote {
-            background: #a0522d;
-            border: 4px solid #8b4513;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .lote:hover {
-            transform: scale(1.05);
-            background: #b25e38;
-            border-color: #cd853f;
-        }
-
-        /* Icone base de terra vazia */
-        .lote::after {
-            content: "🟫";
-            font-size: 2rem;
-            opacity: 0.4;
-            transition: all 0.3s ease;
-        }
-
-        /* --- INTERATIVIDADE: O que acontece quando clica (PLANTIO) --- */
-        
-        /* Lotes ímpares simuladores de Agrofloresta (Sustentável) */
-        .agro:checked + .lote {
-            background: #2e7d32;
-            border-color: #1b5e20;
-        }
-        .agro:checked + .lote::after {
-            content: "🌳🍓"; /* Árvores + Frutas juntas */
-            opacity: 1;
-        }
-
-        /* Lotes pares simuladores de Plantio Direto Rotativo */
-        .rotativo:checked + .lote {
-            background: #27ae60;
-            border-color: #1e8449;
-        }
-        .rotativo:checked + .lote::after {
-            content: "🌱🌽"; /* Milho protegido pela palha */
-            opacity: 1;
-        }
-
-        /* --- INSTRUÇÕES E REGRAS SUSTENTÁVEIS --- */
-        .painel-instrucoes {
-            background: #34495e;
-            max-width: 500px;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 5px solid #2ecc71;
-        }
-
-        .painel-instrucoes h3 {
-            color: #2ecc71;
+            color: #2e7d32;
             margin-bottom: 10px;
         }
 
-        .painel-instrucoes ul {
-            list-style-type: none;
+        /* BARRA DE STATUS (HAY DAY) */
+        .hud {
+            display: flex;
+            gap: 20px;
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 3px solid #81c784;
         }
 
-        .painel-instrucoes li {
-            margin-bottom: 8px;
-            font-size: 0.95rem;
+        .hud-item {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* LOJA DE SEMENTES (PRODUTOS) */
+        .loja {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .semente-btn {
+            background: #fff;
+            border: 3px solid #ced4da;
+            padding: 10px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .semente-btn.selecionado {
+            border-color: #2e7d32;
+            background: #e8f5e9;
+            transform: scale(1.05);
+        }
+
+        /* CAMPO DE CULTIVO 2D */
+        .campo {
+            display: grid;
+            grid-template-columns: repeat(3, 110px);
+            gap: 15px;
+            background: #cb99c9; /* Cor de terra arada estilo cartoon */
+            padding: 20px;
+            border-radius: 20px;
+            border: 6px solid #8b5a2b;
+            box-shadow: 0 10px 0 #5c3a21;
+        }
+
+        .lote {
+            width: 110px;
+            height: 110px;
+            background: #8b5a2b;
+            border-radius: 10px;
+            border: 3px solid #73421a;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            font-size: 2rem;
+            transition: background 0.2s;
+        }
+
+        .lote:hover {
+            background: #9e6b3c;
+        }
+
+        /* TEXTO DO TEMPO DE CRESCIMENTO */
+        .timer {
+            position: absolute;
+            bottom: 5px;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-family: monospace;
+        }
+
+        .instrucoes {
+            margin-top: 40px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
-    <h1>AgroEco</h1>
-    <p class="subtitulo">Simulador de Gestão e Agro Inteligente</p>
+    <h1>BioFazenda Sustentável</h1>
 
-    <div class="painel-status">
-        <div class="status-item">💰 <span id="moedas">100</span></div>
-        <div class="status-item">🍃 Sustentabilidade: <span style="color: #2ecc71;">100%</span></div>
-        <div class="status-item">🚜 Produção: <span style="color: #f1c40f;">Forte</span></div>
+    <div class="hud">
+        <div class="hud-item">💰 Moedas: <span id="moedas">50</span></div>
+        <div class="hud-item">🍃 Eco-Pontos: <span id="eco">100</span></div>
     </div>
 
-    <div class="fazenda-grid">
-        
-        <input type="checkbox" id="lote1" class="plot-input agro">
-        <label for="lote1" class="lote" title="Clique para implantar Agrofloresta!"></label>
-
-        <input type="checkbox" id="lote2" class="plot-input rotativo">
-        <label for="lote2" class="lote" title="Clique para fazer Rotação de Milho!"></label>
-
-        <input type="checkbox" id="lote3" class="plot-input agro">
-        <label for="lote3" class="lote" title="Clique para implantar Agrofloresta!"></label>
-
-        <input type="checkbox" id="lote4" class="plot-input rotativo">
-        <label for="lote4" class="lote" title="Clique para fazer Rotação de Milho!"></label>
-
-        <input type="checkbox" id="lote5" class="plot-input agro">
-        <label for="lote5" class="lote" title="Clique para implantar Agrofloresta!"></label>
-
-        <input type="checkbox" id="lote6" class="plot-input rotativo">
-        <label for="lote6" class="lote" title="Clique para fazer Rotação de Milho!"></label>
-
+    <p style="margin-bottom: 5px; font-weight: bold; color: #555;">Escolha o que plantar:</p>
+    <div class="loja">
+        <div class="semente-btn selecionado" id="btn-trigo" onclick="selecionarPlanta('trigo')">
+            <span>🌾 Trigo Orgânico</span>
+            <small>Custa: 5💰 | Ganha: 12💰</small>
+            <small style="color: #2e7d32;">+10 Eco-Pontos</small>
+        </div>
+        <div class="semente-btn" id="btn-legume" onclick="selecionarPlanta('legume')">
+            <span>🥕 Legumes Agroecológicos</span>
+            <small>Custa: 15💰 | Ganha: 35💰</small>
+            <small style="color: #2e7d32;">+25 Eco-Pontos</small>
+        </div>
     </div>
 
-    <div class="painel-instrucoes">
-        <h3>Como Jogar:</h3>
-        <ul>
-            <li>Mudança no Espaço: Clique nos quadrados de terra marrom para aplicar suas estratégias.</li>
-            <li>🌳 <strong>Lotes Ímpares:</strong> Sistema de Agrofloresta (recupera o solo e gera frutas preciosas).</li>
-            <li>🌽 <strong>Lotes Pares:</strong> Plantio Direto Rotativo (produção em alta escala sem desgastar a terra).</li>
-            <li>💡 <em>Para resetar a fazenda e colher, basta atualizar a página (F5)!</em></li>
-        </ul>
+    <div class="campo">
+        <div class="lote" onclick="clicarNoLote(this)">🤎</div>
+        <div class="lote" onclick="clicarNoLote(this)">🤎</div>
+        <div class="lote" onclick="clicarNoLote(this)">🤎</div>
+        <div class="lote" onclick="clicarNoLote(this)">🤎</div>
+        <div class="lote" onclick="clicarNoLote(this)">🤎</div>
+        <div class="lote" onclick="clicarNoLote(this)">🤎</div>
     </div>
 
+    <div class="instrucoes">
+        <p><strong>Como Jogar:</strong> Selecione a planta na parte de cima, clique em um lote marrom para plantar. Espere crescer e clique novamente para <strong>colher</strong> seus lucros sustentáveis!</p>
+    </div>
+
+    <script>
+        // Dados do Jogo
+        let moedas = 50;
+        let ecoPontos = 100;
+        let plantaSelecionada = 'trigo';
+
+        // Configuração das Plantas
+        const plantas = {
+            trigo: { nome: 'Trigo', custo: 5, retorno: 12, eco: 10, tempo: 3, iconePlantei: '🌱', iconePronto: '🌾' },
+            legume: { nome: 'Legumes', custo: 15, retorno: 35, eco: 25, tempo: 7, iconePlantei: '🌿', iconePronto: '🥕' }
+        };
+
+        // Selecionar qual semente está na mão do jogador
+        function selecionarPlanta(tipo) {
+            plantaSelecionada = tipo;
+            document.querySelectorAll('.semente-btn').forEach(btn => btn.classList.remove('selecionado'));
+            document.getElementById(`btn-${tipo}`).classList.add('selecionado');
+        }
+
+        // Lógica de clicar no quadradinho da fazenda
+        function clicarNoLote(lote) {
+            const estado = lote.getAttribute('data-estado');
+
+            // 1. SE O LOTE ESTIVER VAZIO: PLANTA
+            if (!estado || estado === 'vazio') {
+                const info = plantas[plantaSelecionada];
+
+                if (moedas < info.custo) {
+                    alert("Moedas insuficientes para plantar!");
+                    return;
+                }
+
+                // Gasta dinheiro do plantio
+                moedas -= info.custo;
+                atualizarHUD();
+
+                // Muda o estado do lote para crescendo
+                lote.setAttribute('data-estado', 'crescendo');
+                lote.setAttribute('data-tipo', plantaSelecionada);
+                lote.innerText = info.iconePlantei;
+
+                // Cria o cronômetro visual
+                let tempoRestante = info.tempo;
+                const timerDiv = document.createElement('div');
+                timerDiv.className = 'timer';
+                timerDiv.innerText = tempoRestante + 's';
+                lote.appendChild(timerDiv);
+
+                // Contagem regressiva
+                const intervalo = setInterval(() => {
+                    tempoRestante--;
+                    if (tempoRestante <= 0) {
+                        clearInterval(intervalo);
+                        timerDiv.remove();
+                        // Pronto para colher!
+                        lote.setAttribute('data-estado', 'pronto');
+                        lote.innerText = info.iconePronto;
+                    } else {
+                        timerDiv.innerText = tempoRestante + 's';
+                    }
+                }, 1000);
+            } 
+            // 2. SE ESTIVER PRONTO: COLHE
+            else if (estado === 'pronto') {
+                const tipoPlanta = lote.getAttribute('data-tipo');
+                const info = plantas[tipoPlanta];
+
+                // Recebe recompensa
+                moedas += info.retorno;
+                ecoPontos += info.eco;
+                atualizarHUD();
+
+                // Reseta o lote para terra vazia
+                lote.setAttribute('data-estado', 'vazio');
+                lote.innerText = '🤎';
+            }
+        }
+
+        // Atualiza os textos de moedas e eco-pontos na tela
+        function atualizarHUD() {
+            document.getElementById('moedas').innerText = moedas;
+            document.getElementById('eco').innerText = ecoPontos;
+        }
+    </script>
 </body>
 </html>
